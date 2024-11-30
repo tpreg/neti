@@ -1,16 +1,16 @@
 package com.neti.service;
 
-import com.neti.model.Customer;
 import com.neti.model.CustomerType;
 import com.neti.model.Part;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.neti.model.CustomerType.VIP;
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
 
-public final class OfferCalculator {
+public class OfferCalculator {
 
 	private static final BigDecimal DEFAULT_MARKUP_RATE = new BigDecimal("0.12");
 	private static final BigDecimal VIP_MARKUP_RATE = new BigDecimal("0.10");
@@ -23,9 +23,9 @@ public final class OfferCalculator {
 	private static final BigDecimal VIP_DISCOUNT_AMOUNT_500K = new BigDecimal("50000");
 	private static final BigDecimal VIP_DISCOUNT_AMOUNT_200K = new BigDecimal("12000");
 	private static final BigDecimal LOYALTY_DISCOUNT_RATE = new BigDecimal("0.95");
+	private static final int DEFAULT_SCALE = 0;
 
-	public BigDecimal calculateOffer(final Customer customer, final List<Part> parts) {
-		final var customerType = customer.customerType();
+	public BigDecimal calculateOffer(final CustomerType customerType, final List<Part> parts) {
 		final var totalPrice = calculateTotalPrice(parts);
 		final var labourFee = calculateLabourFee(totalPrice);
 		final var totalMarkUp = calculateTotalMarkUp(customerType, totalPrice);
@@ -39,10 +39,10 @@ public final class OfferCalculator {
 			case NON_REGISTERED -> totalCost;
 			case LOYAL_CUSTOMER -> applyLoyaltyDiscount(totalCost);
 		};
-		return finalCost.setScale(0, HALF_UP);
+		return finalCost.setScale(DEFAULT_SCALE, HALF_UP);
 	}
 
-	private static BigDecimal applyLoyaltyDiscount(final BigDecimal totalCost) {
+	private BigDecimal applyLoyaltyDiscount(final BigDecimal totalCost) {
 		return totalCost.multiply(LOYALTY_DISCOUNT_RATE);
 	}
 
@@ -52,24 +52,12 @@ public final class OfferCalculator {
 	}
 
 	private BigDecimal calculateTotalPrice(final List<Part> parts) {
-		return parts.stream() //
-				.map(Part::price) //
-				.reduce(ZERO, BigDecimal::add);
+		return parts.stream().map(Part::price).reduce(ZERO, BigDecimal::add);
 	}
 
 	private BigDecimal calculateTotalMarkUp(final CustomerType customerType, final BigDecimal purchasePrice) {
-		return switch (customerType) {
-			case VIP -> calculateTotalVipMarkUp(purchasePrice);
-			case NON_REGISTERED, LOYAL_CUSTOMER -> calculateTotalDefaultMarkUp(purchasePrice);
-		};
-	}
+		return customerType == VIP ? purchasePrice.multiply(VIP_MARKUP_RATE) : purchasePrice.multiply(DEFAULT_MARKUP_RATE);
 
-	private BigDecimal calculateTotalDefaultMarkUp(final BigDecimal purchasePrice) {
-		return purchasePrice.multiply(DEFAULT_MARKUP_RATE);
-	}
-
-	private BigDecimal calculateTotalVipMarkUp(final BigDecimal purchasePrice) {
-		return purchasePrice.multiply(VIP_MARKUP_RATE);
 	}
 
 	private BigDecimal applyVipDiscount(final BigDecimal totalAmount) {
@@ -83,7 +71,6 @@ public final class OfferCalculator {
 			return totalAmount.subtract(VIP_DISCOUNT_AMOUNT_200K);
 		}
 		return totalAmount;
-
 	}
 
 }

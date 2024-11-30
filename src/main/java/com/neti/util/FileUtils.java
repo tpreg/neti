@@ -3,6 +3,7 @@ package com.neti.util;
 import com.neti.model.Customer;
 import com.neti.model.CustomerType;
 import com.neti.model.Part;
+import com.neti.util.exception.UtilityClassDoNotInstantiateException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,7 +17,11 @@ import static java.nio.file.Files.lines;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-public class FileUtils {
+public final class FileUtils {
+
+	private FileUtils() {
+		throw new UtilityClassDoNotInstantiateException(FileUtils.class);
+	}
 
 	public static Customer readCustomerFromFile(final String filename) {
 		try (final var lines = lines(Paths.get(filename), UTF_8)) {
@@ -63,7 +68,7 @@ public class FileUtils {
 		}
 	}
 
-	public static String getFilename(final String[] args) {
+	public static String getFilenameFromArgs(final String[] args) {
 		if (args.length > 0) {
 			return args[0];
 		}
