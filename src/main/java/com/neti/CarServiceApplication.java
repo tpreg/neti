@@ -12,8 +12,8 @@ public class CarServiceApplication {
 		final var filename = getFilenameFromArgs(args);
 		final var customer = readCustomerFromFile(filename);
 		final var parts = readPartsFromFile(filename);
-		final var finalOfferPrice = offerCalculator.calculateOffer(customer.customerType(), parts);
-		final var content = generateOfferSummary(customer.name(), finalOfferPrice);
+		final var detailedOffer = offerCalculator.calculateOffer(customer.customerType(), parts);
+		final var content = generateOfferSummary(customer.name(), detailedOffer);
 		writeResultToFile("offer.txt", content);
 	}
 
