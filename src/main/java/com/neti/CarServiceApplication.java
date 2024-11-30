@@ -3,7 +3,7 @@ package com.neti;
 import com.neti.service.OfferCalculator;
 
 import static com.neti.util.FileUtils.*;
-import static com.neti.util.OfferSummaryGenerator.generateOfferSummary;
+import static com.neti.util.OfferSummaryGenerator.generateOfferSummaryPDF;
 
 public class CarServiceApplication {
 
@@ -13,8 +13,7 @@ public class CarServiceApplication {
 		final var customer = readCustomerFromFile(filename);
 		final var parts = readPartsFromFile(filename);
 		final var detailedOffer = offerCalculator.calculateOffer(customer.customerType(), parts);
-		final var content = generateOfferSummary(customer.name(), detailedOffer);
-		writeResultToFile("offer.txt", content);
+		generateOfferSummaryPDF(customer.name(), detailedOffer, "offer.pdf");
 	}
 
 }

@@ -12,7 +12,7 @@ file.
 
 ## Input Data
 
-The application requires a single comma-separated input file containing:
+The application requires a single comma-separated input file (`CSV`) containing:
 
 - **First Line**: The customer's name and type. The type can be one of the following:
     - `NON_REGISTERED`
@@ -27,27 +27,36 @@ The input file should be accessible, and its filename should be passed as an arg
 
 ## How to Build and Run
 
-1. **Compile and Run**:
-    - Open a command prompt or terminal.
-    - Navigate to the root directory of the application.
-    - Compile the code with:
-      ```bash
-      javac Main.java
-      ```
-    - Run the program using the command below, using `data.csv` as an example file name:
-      ```bash
-      java Main data.csv
-      ```
+### Build
 
-2. **Expected Operation**:
-    - The application reads the specified file, calculates the offer price, and creates an offer summary.
-    - The result is saved to `offer.txt`.
+- Open a command prompt or terminal.
+- Navigate to the root directory of the application.
+- Compile the code with:
+    ```bash
+    javac Main.java
+    ```
+
+### Run
+
+- Run the program using the command below, using `data.csv` as an example file name:
+    ```bash
+    java Main data.csv
+    ```
+
+### Expected Operation
+
+- The application processes the input file to compute total offer price contingent on a customer type, includes detailed pricing for each
+  part.
+- Generates a detailed `offer.pdf` capturing the customer's name, summarized total price, and per-part breakdown.
 
 ## Output Data
 
 After running the program, the following output file is generated:
 
-- **offer.txt**: Contains the customer's name and the final offer price in a summarized format.
+- **offer.pdf**: A detailed summary including:
+    - Customer's name.
+    - Total offer price.
+    - Pricing details per part, accounting for customer-based markups.
 
 ## Troubleshooting
 
